@@ -70,7 +70,6 @@ zp2sos = function(z,p,k)
     zr = zcpl$zr
     
     pcpl = cplxreal(p)
-    
     pc = pcpl$zc
     pr = pcpl$zr
     
@@ -120,17 +119,29 @@ zp2sos = function(z,p,k)
     {
         zcm2r = -2 * Re(zc)
         zca2 = abs(zc) ^ 2
+    }else
+    {
+        zcm2r = NULL
+        zca2 = NULL
     }
     
-    pcm2r = -2 * Re(pc)
-    pca2 = abs(pc) ^ 2
+    if(npc > 0)
+    {
+        pcm2r = -2 * Re(pc)
+        pca2 = abs(pc) ^ 2
+    }else
+    {
+        pcm2r = NULL
+        pca2 = NULL
+    }
+    
     
     sos = matrix(rep(0, nsecs*6),ncol=6)
     sos[,1] = rep(1,nsecs) # all 2nd-order polynomials are monic
     sos[,4] = rep(1,nsecs)
     
-    nzrl=nzc+nzrsec # index of last real zero section
-    nprl=npc+nprsec # index of last real pole section
+    nzrl = nzc + nzrsec # index of last real zero section
+    nprl = npc + nprsec # index of last real pole section
     
     for (i in 1:nsecs)
     {
@@ -168,6 +179,9 @@ tf2sos = function(tf)
     zp2sos(z, p, k)
 }
 
+
+#ret val.
+1
 
 
 
