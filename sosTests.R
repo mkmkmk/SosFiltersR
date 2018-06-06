@@ -2,7 +2,7 @@ rm(list=ls())
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 print(getwd())
-
+library(signal)
 source("sos.R")
 
 
