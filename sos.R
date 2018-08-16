@@ -166,7 +166,7 @@ zp2sos = function(z,p,k)
         }
     }
     
-    list(sos = sos, g = k) 
+    list(sos = Re(sos), g = k) 
     
 }
 
