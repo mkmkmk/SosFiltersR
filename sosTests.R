@@ -128,13 +128,41 @@ plot(ft_ref, type='l', col = 'blue')
 lines(ft_ver2, type='l', col = 'red')
 
 
+#---------------
+# OldButt4_20_300_1000Hz
+
+prepSos = 
+    list(
+        g = 0.387132401864575, 
+        sos = t(matrix(c(1, 2, 1, 1, 0.365079803471447, 0.197369861882712,1, -2, 1, 1, -1.98222897911192, 0.982386928837799), ncol = 2)))
+
+prepSos$sos
+
+zi = sos_zi(prepSos) 
+
+x = 1564 + 1:5000 %% 100
+x = x*1e-9
+
+ft = sosFilter(prepSos, x)
+ft_zi = sosFilter(prepSos, x, zi*x[1])
 
 
+plot(ft, type = 'l', col = 'red')
+lines(ft_zi, type = 'l', col = 'blue')
 
+paste(zi[1,], collapse = ', ')
+paste(zi[2,], collapse = ', ')
 
+zi*prepSos$g
 
+c(	9.448075803990889E-07,
+	2.9960740126759604E-07,
+	-1.550421448895139E-06,
+	1.5504214488951396E-06) / 1.56435851E-06
 
+# wersja w C# może mieć wzmocnienie na wejściu dlatego ew. trzeba zi pomnożyć przez g
+sos = tf2sos(butter(2, c(0.1, 2.1) / (1000 / 2), type = "pass"))
+sos_zi(sos) * sos$g
 
-
-
-
+sos = tf2sos(butter(2, c(2, 300) / (1000 / 2), type = "pass"))
+sos_zi(sos) * sos$g

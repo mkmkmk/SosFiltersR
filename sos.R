@@ -237,7 +237,7 @@ sosFilter = function(sos, x, zi)
         }
         y[i] = value
     }
-    #print(state)
+    print(state)
     y * sos$g
 }
 
