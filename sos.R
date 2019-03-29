@@ -143,9 +143,9 @@ zp2sos = function(z,p,k)
     }
     
     
-    sos = matrix(rep(0, nsecs*6),ncol=6)
-    sos[,1] = rep(1,nsecs) # all 2nd-order polynomials are monic
-    sos[,4] = rep(1,nsecs)
+    sos = matrix(rep(0, nsecs * 6), ncol = 6)
+    sos[,1] = rep(1, nsecs) # all 2nd-order polynomials are monic
+    sos[,4] = rep(1, nsecs)
     
     nzrl = nzc + nzrsec # index of last real zero section
     nprl = npc + nprsec # index of last real pole section
@@ -276,7 +276,7 @@ hackFilter = function(filt, a, x, init.x=c())
     x <- stats::filter(c(init.x, x), filt / a[1], sides = 1)
     x <- na.omit(x, filt / a[1] , sides = 1)
     x <- stats::filter(x, -a[-1] / a[1], method = "recursive")
-    x
+    x[(1 + length(init.x)):length(x)]
 }
 
 
