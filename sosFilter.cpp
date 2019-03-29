@@ -41,47 +41,57 @@ NumericVector sosFilter_cpp(NumericMatrix sos, double gain, NumericVector x, Num
 }
 
 
-// [[Rcpp::export]]
-NumericVector UpSosDn_cpp(NumericVector x, NumericMatrix sos, double gain, int p, int q)
+
+
+void upSosDn(double *x, int nx, double *sos, int nsec, double gain, int p, int q, double *y) 
 {
-    int nx = x.size();
-    int nsec = sos.nrow();
-    
-    sos = transpose(sos);
-    
     double state[nsec * 2];
     for(int i = 0; i < nsec * 2; i++)
         state[i] = 0;
     
     int ny = nx * p / q;
-    NumericVector y = NumericVector(ny);
     
     int iy = 0;
     int iq = 0;
+    
     
     for(int i = 0; i < nx; i++)
     {
         double samp = x[i];
         for(int j = 0; j < p; j++)
         {
-           double res = sosFilter_next(samp, state, &sos[0], nsec, gain);
-           iq++;
-           if(iq == q)
-           {
-              iq = 0;
-              y[iy] = res;
-              iy++;
-              if(iy == ny)
-                 break;
-           }
+            double res = sosFilter_next(samp, state, sos, nsec, gain);
+            iq++;
+            if(iq == q)
+            {
+                iq = 0;
+                y[iy] = res;
+                iy++;
+                if(iy == ny)
+                    break;
+            }
         }
         if(iy == ny)
-           break;
-    }
+            break;
+    }    
     
+}
+
+
+
+// [[Rcpp::export]]
+NumericVector UpSosDn_cpp(NumericVector x, NumericMatrix sos, double gain, int p, int q)
+{
+    int nx = x.size();
+    int nsec = sos.nrow();
+    sos = transpose(sos);
+    int ny = nx * p / q;
+    NumericVector y = NumericVector(ny);
+    upSosDn(&x[0], nx, &sos[0], nsec, gain, p, q, &y[0]); 
     return y;
 
 }
+  
   
   
 // You can include R code blocks in C++ files processed with sourceCpp
