@@ -14,18 +14,12 @@ double sectionFormIItrans(double *state, double section[6], double value)
 }
 
 
-void sosFilter_c(double *x, int nx, double *state, double *sos, int nsec, double gain, double *y) 
+double sosFilter_next(double x, double *state, double *sos, int nsec, double gain) 
 {
-  for(int i = 0; i < nx; i++)
-  {          
-    double value = x[i];
     for (int r = 0; r < nsec; r++)
-       value = sectionFormIItrans(state + r * 2, sos + r * 6, value);
-    y[i] = value * gain;
-  }
-  
+      x = sectionFormIItrans(state + r * 2, sos + r * 6, x);
+    return x * gain;
 }
-
 
 
 
@@ -40,8 +34,9 @@ NumericVector sosFilter_cpp(NumericMatrix sos, double gain, NumericVector x, Num
 
   NumericVector y = NumericVector(nx);
   
-  sosFilter_c(&x[0], nx, &zi[0], &sos[0], nsec, gain, &y[0]);
-
+  for(int i = 0; i < nx; i++)
+    y[i] = sosFilter_next(x[i], &zi[0], &sos[0], nsec, gain);
+  
   return y;
 }
 
