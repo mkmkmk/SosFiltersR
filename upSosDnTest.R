@@ -16,7 +16,7 @@ fsig = 3.7
 
 if (T)
 {
-    p = 2
+    p = 10
     q = 1
 } else
 {
@@ -25,13 +25,15 @@ if (T)
 }
 
 
-t = 1:(fsamp * 1.5) / fsamp
+t = 1:(fsamp * 1.1) / fsamp
 sig = sin(t * 2 * pi * fsig) + 0.4 * sin(t * 2 * pi * fsamp * .27)
 
 plot(t, sig, type = 'l', col = "blue")
 
 #dec_tf = cheby1(8, 0.01, 0.8 / q)
-dec_tf = butter(8, 0.8 * min(1, p / q))
+
+# https://en.wikipedia.org/wiki/Upsampling#Interpolation_filter_design
+dec_tf = butter(8, 0.8 / max (p, q))
 dec_sos = tf2sos(dec_tf)
 
 if(F)
