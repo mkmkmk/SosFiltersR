@@ -3,7 +3,10 @@ rm(list=ls())
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 print(getwd())
 library(signal)
+library(Rcpp)
 source("sos.R")
+
+sourceCpp('sosFilter.cpp')
 
 
 tf = butter(4 / 2, c(1.5, 23) / (1000 / 2))
@@ -126,6 +129,13 @@ lines(ft_ver2, type='l', col = 'blue')
 
 plot(ft_ref, type='l', col = 'blue')
 lines(ft_ver2, type='l', col = 'red')
+
+ft_ver3 = sosFilter_cpp(sos$sos, sos$g, x, zi = sos_zi(sos) * x[1])
+plot(ft_ver3, type='l', col = 'red4')
+
+maxDiff = max(abs(ft_ver2 - ft_ver3))
+maxDiff
+stopifnot(maxDiff < 1e-9)
 
 
 #---------------
