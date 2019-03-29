@@ -13,11 +13,16 @@ sourceCpp('sosFilter.cpp')
 fsamp = 200
 fsig = 3.7
 
-p = 2
-q = 1
 
-# p = 3
-# q = 20
+if (T)
+{
+    p = 2
+    q = 1
+} else
+{
+    p = 3
+    q = 20
+}
 
 
 t = 1:(fsamp * 1.5) / fsamp
@@ -41,16 +46,17 @@ if(F)
 
 resSig = UpSosDn_cpp(sig, dec_sos$sos, dec_sos$g, p, q)
 
-t2 = 0:(length(resSig)-1) / fsamp * length(sig)/length(resSig)
-max(t2)
-lines(t2, resSig, type = 'l', col = "red")
+t2 = 0:(length(resSig) - 1) / fsamp * length(sig) / length(resSig)
+lines(t2, resSig, type = 'l', col = "red4")
+
 
 if(F)
 {
+    setwd("../Resample/")
     source("resampOct.R")
     refSig = resampOct(x = sig, h = resampFilter(p, q), p = p, q = q)
-    plot(t2, refSig, type = 'l', col = "red")
-    lines(t2, resSig, type = 'l', col = "red")
+    plot(t2, refSig, type = 'l', col = "blue4")
+    lines(t2, resSig, type = 'l', col = "red4")
 }
 
 
