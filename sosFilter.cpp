@@ -32,7 +32,12 @@ NumericVector UpSosDn_cpp(NumericVector x, NumericMatrix sos, double gain, int p
     sos = transpose(sos);
     int ny = nx * p / q;
     NumericVector y = NumericVector(ny);
-    upSosDn(&x[0], nx, &sos[0], nsec, gain, p, q, &y[0]); 
+    
+    double state[nsec * 2];
+    for(int i = 0; i < nsec * 2; i++)
+        state[i] = 0;
+    
+    upSosDn(&x[0], nx, &sos[0], nsec, gain, state, p, q, &y[0]); 
     return y;
 
 }

@@ -14,7 +14,7 @@ fsamp = 200
 fsig = 3.7
 
 
-if (T)
+if (F)
 {
     p = 10
     q = 1
@@ -59,6 +59,22 @@ if(F)
     refSig = resampOct(x = sig, h = resampFilter(p, q), p = p, q = q)
     plot(t2, refSig, type = 'l', col = "blue4")
     lines(t2, resSig, type = 'l', col = "red4")
+}
+
+
+if(F)
+{
+    p = 2
+    q = 3
+    dec_tf = butter(8, 0.8 / max (p, q))
+    dec_sos = tf2sos(dec_tf)
+    sosCoef = as.vector(t(dec_sos$sos))
+    cat(sprintf("// resamp filter %s/%s\n", p, q))
+    cat(sprintf("int N_SEC = %s;\n", nrow(dec_sos$sos)))
+    cat(sprintf("NAVFLOAT sos[] = { %s };\n", paste(sprintf("%.10g", sosCoef), collapse = ", ")))
+    cat(sprintf("int gain = %6g;\n", dec_sos$g))
+    
+    
 }
 
 

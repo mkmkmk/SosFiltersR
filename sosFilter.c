@@ -22,13 +22,9 @@ double sosFilter_next(double x, double *state, double *sos, int nsec, double gai
 
 
 
-void upSosDn(double *x, int nx, double *sos, int nsec, double gain, int p, int q, double *y) 
+void upSosDn(double *x, int nx, double *sos, int nsec, double gain, double *state, int p, int q, double *y) 
 {
-    double state[nsec * 2];
-    for(int i = 0; i < nsec * 2; i++)
-        state[i] = 0;
-    
-    int ny = nx * p / q;
+      int ny = nx * p / q;
     
     int iy = 0;
     int iq = 0;
