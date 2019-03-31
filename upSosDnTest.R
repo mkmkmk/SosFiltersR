@@ -70,9 +70,11 @@ if(F)
     dec_sos = tf2sos(dec_tf)
     sosCoef = as.vector(t(dec_sos$sos))
     cat(sprintf("// resamp filter %s/%s\n", p, q))
-    cat(sprintf("int N_SEC = %s;\n", nrow(dec_sos$sos)))
-    cat(sprintf("NAVFLOAT sos[] = { %s };\n", paste(sprintf("%.10g", sosCoef), collapse = ", ")))
-    cat(sprintf("int gain = %6g;\n", dec_sos$g))
+    cat(sprintf("#define RESAMP_P (%g)\n", p))
+    cat(sprintf("#define RESAMP_Q (%g)\n", q))
+    cat(sprintf("#define N_SEC (%g)\n", nrow(dec_sos$sos)))
+    cat(sprintf("#define GAIN (%.6g)\n", dec_sos$g))
+    cat(sprintf("double sos[] = { %s };\n", paste(sprintf("%.10g", sosCoef), collapse = ", ")))
     
     
 }
