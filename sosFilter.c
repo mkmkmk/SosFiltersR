@@ -24,7 +24,7 @@ double sosFilter_next(double x, double *state, double *sos, int nsec, double gai
 
 void upSosDn(double *x, int nx, double *sos, int nsec, double gain, double *state, int p, int q, double *y) 
 {
-      int ny = nx * p / q;
+    int ny = nx * p / q;
     
     int iy = 0;
     int iq = 0;
