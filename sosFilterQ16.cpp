@@ -43,10 +43,32 @@ IntegerVector sosFilterQ16_cpp(NumericMatrix sos, NumericVector gains, IntegerVe
     return y;
 }
    
-
+ 
 
 // [[Rcpp::export]]
-IntegerVector UpSosDnQ16_cpp(IntegerVector x, NumericMatrix sos, NumericVector gains, int p, int q)
+IntegerVector UpSosDnQ16_cpp(IntegerVector x, NumericMatrix sos, int p, int q)
+{
+    int nx = x.size();
+    int nsec = sos.nrow();
+    sos = transpose(sos);
+    int ny = nx * p / q;
+    IntegerVector y = IntegerVector(ny);
+    
+    int32_t state[nsec * 2];
+    for(int i = 0; i < nsec * 2; i++)
+        state[i] = 0;
+    
+    int32_t sosQ16[sos.size()];
+    for(int i = 0; i < sos.size(); i++)
+        sosQ16[i] = sos[i] * (1ll << Q_BITS);
+  
+    upSosDnQ16(&x[0], nx, sosQ16, nsec, 0, state, p, q, &y[0]); 
+    return y;
+
+}
+
+// [[Rcpp::export]]
+IntegerVector UpSosDnQ16_g_cpp(IntegerVector x, NumericMatrix sos, NumericVector gains, int p, int q)
 {
     int nx = x.size();
     int nsec = sos.nrow();
@@ -69,10 +91,8 @@ IntegerVector UpSosDnQ16_cpp(IntegerVector x, NumericMatrix sos, NumericVector g
     
     upSosDnQ16(&x[0], nx, sosQ16, nsec, gainsQ16, state, p, q, &y[0]); 
     return y;
-
+    
 }
-
-
   
   
 // You can include R code blocks in C++ files processed with sourceCpp

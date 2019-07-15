@@ -33,8 +33,30 @@ plot(t, sig, type = 'l', col = "blue")
 #dec_tf = cheby1(8, 0.01, 0.8 / q)
 
 # https://en.wikipedia.org/wiki/Upsampling#Interpolation_filter_design
+
 dec_tf = butter(8, 0.8 / max (p, q))
 dec_sos = tf2sos(dec_tf)
+
+# wykres tłumienia
+if(F)
+{ 
+    char = freqz(filt = dec_tf, Fs = 16, n = 2 ^ 16)
+    char$db = 10 * log10(Mod(char$h))
+    #plot(char$f, char$db, type = 'l', ylim = c(-13, 0))
+    plot(char$f, 1 / Mod(char$h), type = 'l', ylim = c(0, 100), xlim = c(0, 2))
+    
+    10^(13/10)
+    10 * log10(20)
+}
+
+if(F)
+{
+    gsos = dec_sos$sos
+    gsos[1, 1:3] = gsos[1,1:3] * dec_sos$g
+    gsos[, 1:3]
+    gsos[, 4:6]
+}
+
 
 if(F)
 {
@@ -52,9 +74,25 @@ t2 = 0:(length(resSig) - 1) / fsamp * length(sig) / length(resSig)
 lines(t2, resSig, type = 'l', col = "darkgreen")
 
 gains = rep(dec_sos$g ^ (1 / nrow(dec_sos$sos)), nrow(dec_sos$sos))
+
+# tak jak w pythonie - całe wzmocnienie na pierwszej sekcji
+if (F)
+{
+    gains = c(dec_sos$g, rep(1, nrow(dec_sos$sos) - 1))
+    gains[gains < 2^-16] = 2^-16
+}
+
 stopifnot(all(2^16 * gains >= 1))
 
-resSig16 = UpSosDnQ16_cpp(sig, dec_sos$sos, gains, p, q)
+# włączenie gains do sos
+for(r in 1:nrow(dec_sos$sos))
+{
+    dec_sos$sos[r, 1:3] = dec_sos$sos[r, 1:3] * gains[r]
+    gains[r] = 1
+}
+dec_sos$g = 1
+
+resSig16 = UpSosDnQ16_cpp(sig, dec_sos$sos, p, q)
 lines(t2, resSig16, type = 'l', col = "red2")
 
 

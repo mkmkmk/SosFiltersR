@@ -23,9 +23,9 @@ int32_t sosFilterQ16_next(int32_t x, int32_t *state, int32_t *sos, int nsec, int
     for (int r = 0; r < nsec; r++)
     {
         ix = sectionFormIItrans(state + r * 2, sos + r * 6, ix);
-        ix = (ix * gainsQ16[r]) >> Q_BITS;
+        if(gainsQ16)
+            ix = (ix * gainsQ16[r]) >> Q_BITS;
     }
-    //return (ix * gainQ16) >> (Q_BITS * 2);
     return ix >> Q_BITS;
 }
 
