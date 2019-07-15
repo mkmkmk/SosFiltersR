@@ -5,7 +5,9 @@
 #      Author: Mariusz Krej
 #
 
-    
+library(signal)
+
+
 cplxpair = function(inp)
 {
     thresh = 100 * .Machine$double.eps
@@ -41,7 +43,7 @@ cplxreal = function (z, thresh = 100*.Machine$double.eps)
         nzsect2 = nz - nzrsec
         if ((nzsect2 %% 2) != 0)
         {
-            error('cplxreal: Odd number of complex values!');
+            stop('cplxreal: Odd number of complex values!');
         }
         nzsec = nzsect2 / 2
         
