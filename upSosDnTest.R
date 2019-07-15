@@ -7,6 +7,8 @@ library(Rcpp)
 source("sos.R")
 
 sourceCpp('sosFilter.cpp')
+sourceCpp('sosFilterQ16.cpp')
+
 
 #--------------- up_sos_dn test
 
@@ -14,19 +16,17 @@ fsamp = 200
 fsig = 3.7
 
 
-if (F)
-{
-    p = 10
-    q = 1
-} else
-{
-    p = 3
-    q = 20
-}
+p = 2
+q = 3
 
+p = 1
+q = 5
+
+p = 3
+q = 5
 
 t = 1:(fsamp * 1.1) / fsamp
-sig = sin(t * 2 * pi * fsig) + 0.4 * sin(t * 2 * pi * fsamp * .27)
+sig = 100 * (sin(t * 2 * pi * fsig) + 0.4 * sin(t * 2 * pi * fsamp * .27))
 
 plot(t, sig, type = 'l', col = "blue")
 
@@ -49,7 +49,14 @@ if(F)
 resSig = UpSosDn_cpp(sig, dec_sos$sos, dec_sos$g, p, q)
 
 t2 = 0:(length(resSig) - 1) / fsamp * length(sig) / length(resSig)
-lines(t2, resSig, type = 'l', col = "red4")
+lines(t2, resSig, type = 'l', col = "darkgreen")
+
+gains = rep(dec_sos$g ^ (1 / nrow(dec_sos$sos)), nrow(dec_sos$sos))
+stopifnot(all(2^16 * gains >= 1))
+
+resSig16 = UpSosDnQ16_cpp(sig, dec_sos$sos, gains, p, q)
+lines(t2, resSig16, type = 'l', col = "red2")
+
 
 
 if(F)
