@@ -42,7 +42,24 @@ IntegerVector sosFilterQ16_cpp(NumericMatrix sos, NumericVector gains, IntegerVe
    
     return y;
 }
-   
+
+// [[Rcpp::export]]
+IntegerVector sosFilterQ16_direct_cpp(IntegerVector sos, int nsec, IntegerVector x) 
+{
+    int nx = x.size();
+
+    IntegerVector y = IntegerVector(nx);
+    
+    int stateSize = nsec * 2;
+    int32_t state[stateSize];
+    for(int i = 0; i < stateSize; i++)
+        state[i] = 0;
+    
+    for(int i = 0; i < nx; i++)
+        y[i] = sosFilterQ16_next(x[i], state, &sos[0], nsec, 0);
+
+    return y;
+}
  
 
 // [[Rcpp::export]]
@@ -105,7 +122,7 @@ IntegerVector UpSosDnQ16_g_cpp(IntegerVector x, NumericMatrix sos, NumericVector
 library(signal)
 library(Rcpp)
 source("sos.R")
-
+if(F)
 {
     fs = 1000
     
@@ -132,7 +149,7 @@ source("sos.R")
 }
 
 # -----------------------
-
+if(F)
 {
     fsamp = 200
     fsig = 3.7
@@ -155,5 +172,27 @@ source("sos.R")
     
     
 }
+
+if(F)
+{
+    
+    sig = 1e3 + runif(100)
+    tf = butter(6, 0.8 / 4)
+    sos = tf2sos(tf)
+    plot(sig, type='l', col = 'blue4')
+    
+    ft_ref = filter(tf, sig)
+    plot(ft_ref, type='l', col = 'blue4')
+    
+    gains = rep(sos$g ^ (1 / nrow(sos$sos)), nrow(sos$sos))
+    stopifnot(all(2^16 * gains >= 1))
+    
+    ft_ver = sosFilterQ16_cpp(sos$sos, gains, sig, zi = 0 * sos_zi(sos))
+    lines(ft_ver, type = 'l', col = 'red4')
+    
+    
+    
+}
+
 
 */
