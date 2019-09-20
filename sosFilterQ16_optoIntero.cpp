@@ -72,15 +72,11 @@ if(T)
     sig = rep(sig, 10)
     sig = sample(sig)
     
-    #sig = 47200 - 10000 * runif(500)
-    
     code0 = 47200
-    fsig = sosFilterQ16_direct_cpp(sos, nsec, sig - code0) + code0
-    #fsig = fsig + code0
-    if(F)
-        debugonce(filter)
-    fsigMA = filter(rep(1/10, 10), a = 1, x=sig)
+    #sig = code0 - 10000 * runif(500)
     
+    fsig = sosFilterQ16_direct_cpp(sos, nsec, sig - code0) + code0
+    fsigMA = filter(rep(1/10, 10), a = 1, x=sig)
     
     
     plot(sig, type = 'l', col='blue2') # , ylim = range(sig, fsig, fsigMA))
@@ -94,6 +90,7 @@ if(T)
         Vcom = 2.95
         (Vcom - Vref * code / 2^16) / Rf * 1e6
     }
+    
     plot(code2microAmp(sig), type = 'l', col='blue2') #, ylim = range(sig, fsig))
     lines(code2microAmp(fsigMA), type = 'l', col='darkgreen', lwd=2)
     lines(code2microAmp(fsig), type = 'l', col='red4')

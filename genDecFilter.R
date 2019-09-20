@@ -10,16 +10,16 @@ sourceCpp('sosFilter.cpp')
 
 
 p = 1
-
 q = 16/5
 q = 4
 q = 2
-order = 8
+q = 10
+
+order = 6
 gainMul = 1
 
 dec_tf = butter(order, 0.8 / max (p, q))
 dec_sos = tf2sos(dec_tf)
-
 # korekcja gain-a
 dec_sos$g = dec_sos$g * gainMul
 
