@@ -133,6 +133,7 @@ if(F)
     sos = tf2sos(tf)
     
     ft_ref = filter(tf, x, init.x = rep(x[1], length(tf$b) - 1))
+    ft_ref = as.vector(ft_ref)
     plot(ft_ref, type='l', col = 'blue4')
     
     #ft_flo = sosFilter_cpp(sos$sos, sos$g, x, zi = sos_zi(sos) * x[1])
@@ -161,6 +162,7 @@ if(F)
     plot(x, type='l', col = 'blue4')
     
     ft_ref = filter(tf, x)
+    ft_ref = as.vector(ft_ref)
     plot(ft_ref, type='l', col = 'blue4')
     
     gains = rep(sos$g ^ (1 / nrow(sos$sos)), nrow(sos$sos))
@@ -182,15 +184,21 @@ if(F)
     plot(sig, type='l', col = 'blue4')
     
     ft_ref = filter(tf, sig)
+    ft_ref = as.vector(ft_ref)
     plot(ft_ref, type='l', col = 'blue4')
     
     gains = rep(sos$g ^ (1 / nrow(sos$sos)), nrow(sos$sos))
     stopifnot(all(2^16 * gains >= 1))
     
-    ft_ver = sosFilterQ16_cpp(sos$sos, gains, sig, zi = 0 * sos_zi(sos))
+    system.time(
+        for(i in 1:1000)
+            ft_ver = sosFilterQ16_cpp(sos$sos, gains, sig, zi = 0 * sos_zi(sos))
+    )
+    
     lines(ft_ver, type = 'l', col = 'red4')
     
-    
+    if(F)
+        print(system.time(sosFilterQ16_cpp(sos$sos, gains, 1e3 + 5 * runif(1e7), zi = 0 * sos_zi(sos))))
     
 }
 
