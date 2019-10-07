@@ -80,8 +80,8 @@ if(T)
     
     
     plot(sig, type = 'l', col='blue2') # , ylim = range(sig, fsig, fsigMA))
-    lines(fsigMA, type = 'l', col='darkgreen', lwd=2)
-    lines(fsig, type = 'l', col='red3', lwd=2)
+    lines(fsigMA, type = 'l', col='darkgreen', lwd = 2)
+    lines(fsig, type = 'l', col='red3', lwd = 2)
     
     code2microAmp = function(code)
     {
@@ -95,7 +95,7 @@ if(T)
     lines(code2microAmp(fsigMA), type = 'l', col='darkgreen', lwd=2)
     lines(code2microAmp(fsig), type = 'l', col='red4')
   
-    
+
 }
 
 */
